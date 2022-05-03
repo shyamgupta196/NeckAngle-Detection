@@ -19,26 +19,30 @@ cascPath = 'facedet.xml'
 
 faceCascade = cv2.CascadeClassifier(cascPath)
 
-mtcnn = MTCNN(device=device)
+mtcnn = MTCNN(device=device,keep_all=False)
 
-# data = datasets.ImageFolder('images',transform=transforms.ToTensor())
-
-# loader = DataLoader(data)
-
-
-# for img,lab in loader:
-#     # print(img.squeeze(0).shape)
-#     # plt.imshow(img.squeeze(0).permute(1,2,0).detach().cpu().numpy())
-#     # plt.show()
-#     pass
 img = Image.open('images/faces/friends.jpg')
+
+# cap = cv2.VideoCapture(0)
+
+
+
 
 print(img.size)
 boxes, _ = mtcnn.detect(img)
 imgc = img.copy()
 draw = ImageDraw.Draw(imgc)
 for box in boxes:
-    draw.rectangle(box.tolist(), outline=(255, 0, 0), width=6)
-display.display(imgc)
+    draw.rectangle(box.tolist(), outline=(255, 0, 0), width=3)
 plt.imshow(imgc)
+plt.show()
+
+imgarr = np.array(imgc)
+ear = ear_cascade.detectMultiScale(imgarr,minNeighbors=5,scaleFactor=1.15)
+
+for (x,y,w,h) in ear:
+    cv2.rectangle(imgarr, (x,y), (x+w,y+h), (255,0,0), 3)
+
+cv2.imshow('img',imgarr)
+plt.imshow(imgarr)
 plt.show()
